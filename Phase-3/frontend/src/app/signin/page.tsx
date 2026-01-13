@@ -65,9 +65,13 @@ export default function SignInPage() {
       // Debug: check if login worked
       console.log('TOKEN IN LOCALSTORAGE:', localStorage.getItem('token'))
 
-      // Redirect to dashboard
-      // For GitHub Pages, use router.push with basePath
-      router.push('/dashboard')
+      // Redirect to dashboard after small delay to ensure auth is stored
+      // For static export, must use window.location.href
+      setTimeout(() => {
+        const pathname = window.location.pathname
+        const basePath = pathname.includes('/hackaton2pages') ? '/hackaton2pages' : ''
+        window.location.href = `${basePath}/dashboard`
+      }, 100)
     } catch (err: any) {
       setError(err.message || 'Login failed')
     } finally {
