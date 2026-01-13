@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.egg-info/
+
+# Build outputs
+.next/
+build/
+dist/
+*.pyc
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp files
+*.tmp
+tmpclaude-*
+
+# OS
+.DS_Store
+Thumbs.db
