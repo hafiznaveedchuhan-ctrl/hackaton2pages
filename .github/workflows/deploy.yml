@@ -1,26 +1,26 @@
-name: Deploy Frontend to GitHub Pages
+name: Build and Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master, main, feature/connect-railway-backend]
-  pull_request:
     branches: [master, main]
+    paths:
+      - 'Phase-3/frontend/**'
+      - '.github/workflows/deploy.yml'
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
-  build:
+  build-and-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,21 +35,63 @@ jobs:
 
       - name: Build
         working-directory: Phase-3/frontend
+        env:
+          NODE_ENV: production
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: "Phase-3/frontend/out"
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@example.com"
+          git config --global user.name "GitHub Actions Bot"
 
-  deploy:
-    needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy to gh-pages branch
+        run: |
+          # Create a temporary directory for deployment
+          mkdir -p /tmp/deploy
+          cp -r Phase-3/frontend/out/* /tmp/deploy/
+          touch /tmp/deploy/.nojekyll
+
+          # Save current branch info
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+          # Check if gh-pages branch exists, if not create it
+          if git show-ref --quiet refs/remotes/origin/gh-pages; then
+            echo "✅ gh-pages branch exists"
+            git fetch origin gh-pages
+            git checkout gh-pages
+          else
+            echo "📝 Creating gh-pages branch..."
+            git checkout --orphan gh-pages
+            git rm -rf .
+          fi
+
+          # Clean everything except .git
+          find . -mindepth 1 -not -name '.git' -type f -delete
+          find . -mindepth 1 -not -name '.git' -type d -exec rm -rf {} + 2>/dev/null || true
+
+          # Copy deployment files
+          cp -r /tmp/deploy/* .
+
+          # Add and commit
+          git add .
+          git commit -m "🚀 Deploy: GitHub Pages build from $(date -u +'%Y-%m-%d %H:%M:%S') UTC [skip ci]" || echo "⚠️ No changes to commit"
+
+          # Push to gh-pages
+          git push origin gh-pages -f
+
+          echo "✅ Deployed to gh-pages branch"
+
+      - name: Show deployment info
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ DEPLOYMENT COMPLETE"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "🌐 GitHub Pages URL:"
+          echo "   https://hafiznaveedchuhan-ctrl.github.io/hackaton2pages/"
+          echo ""
+          echo "📚 Repository:"
+          echo "   https://github.com/hafiznaveedchuhan-ctrl/hackaton2pages"
+          echo ""
+          echo "⏱️  It may take a few minutes for changes to appear"
+          echo ""
