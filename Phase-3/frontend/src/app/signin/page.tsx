@@ -65,11 +65,9 @@ export default function SignInPage() {
       // Debug: check if login worked
       console.log('TOKEN IN LOCALSTORAGE:', localStorage.getItem('token'))
 
-      // Use window.location for reliable redirect with basePath support
-      // For GitHub Pages, detect basePath from current URL
-      const currentPath = window.location.pathname
-      const basePath = currentPath.includes('/hackaton2pages') ? '/hackaton2pages' : ''
-      window.location.href = `${basePath}/dashboard`
+      // Redirect to dashboard
+      // For GitHub Pages, use router.push with basePath
+      router.push('/dashboard')
     } catch (err: any) {
       setError(err.message || 'Login failed')
     } finally {
