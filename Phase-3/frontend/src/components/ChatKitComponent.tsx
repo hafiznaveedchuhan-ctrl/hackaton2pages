@@ -168,7 +168,9 @@ export default function ChatKitComponent() {
 
   const handleLogout = () => {
     logout()
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+    // For GitHub Pages, detect basePath from current URL
+    const currentPath = window.location.pathname
+    const basePath = currentPath.includes('/hackaton2pages') ? '/hackaton2pages' : ''
     window.location.href = `${basePath}/`
   }
 
