@@ -168,7 +168,8 @@ export default function ChatKitComponent() {
 
   const handleLogout = () => {
     logout()
-    window.location.href = '/'
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+    window.location.href = `${basePath}/`
   }
 
   // Show loading while checking auth

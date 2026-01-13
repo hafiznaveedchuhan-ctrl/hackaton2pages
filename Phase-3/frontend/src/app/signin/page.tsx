@@ -65,8 +65,9 @@ export default function SignInPage() {
       // Debug: check if login worked
       console.log('TOKEN IN LOCALSTORAGE:', localStorage.getItem('token'))
 
-      // Use window.location for reliable redirect (fixes router.push issue)
-      window.location.href = '/dashboard'
+      // Use window.location for reliable redirect with basePath support
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+      window.location.href = `${basePath}/dashboard`
     } catch (err: any) {
       setError(err.message || 'Login failed')
     } finally {
