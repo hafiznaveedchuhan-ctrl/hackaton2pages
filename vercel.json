@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "buildCommand": "cd Phase-3/backend && pip install -r requirements.txt",
+  "functions": {
+    "Phase-3/backend/main.py": {
+      "runtime": "python3.11"
+    }
+  },
+  "env": {
+    "PYTHONUNBUFFERED": "1",
+    "PORT": "3000"
+  }
+}

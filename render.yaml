@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: hackaton2pages-backend
+    env: python
+    plan: free
+    buildCommand: "cd Phase-3/backend && pip install -r requirements.txt"
+    startCommand: "cd Phase-3/backend && python start_backend.py"
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: DATABASE_URL
+        value: sqlite:///./test.db
