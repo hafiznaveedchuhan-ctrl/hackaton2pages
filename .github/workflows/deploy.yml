@@ -33,6 +33,15 @@ jobs:
         working-directory: Phase-3/frontend
         run: npm ci
 
+      - name: Clean build cache
+        working-directory: Phase-3/frontend
+        run: |
+          rm -rf .next
+          rm -rf out
+          rm -rf node_modules/.cache
+          rm -rf .turbo
+          echo "✓ Build cache cleared"
+
       - name: Build
         working-directory: Phase-3/frontend
         env:
